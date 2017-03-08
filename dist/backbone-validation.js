@@ -169,6 +169,16 @@ Backbone.Validation = (function(_){
       // Reduces the array of validators to an error message by
       // applying all the validators and returning the first error
       // message, if any.
+
+      // if nested backbone model is used, validate the child model 
+      // 
+      if ( model.get(attr) instanceof Backbone.Model ){
+        var m = model.get(attr);
+        m.validation = _.result(model, 'validation')[attr];
+        var error = m.validate( null , {validate:true});
+        return error;
+      }
+
       return _.reduce(getValidators(model, attr), function(memo, validator){
         // Pass the format functions plus the default
         // validators as the context to the validator
